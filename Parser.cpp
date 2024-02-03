@@ -44,6 +44,7 @@ void bf::Parser::parseInstructions()
         }
     }
 
+    // Check whether the stack is empty
     if (!bracketStack.empty())
         m_hasBracketError = true;
 }

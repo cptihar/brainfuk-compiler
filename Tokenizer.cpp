@@ -7,7 +7,10 @@ bf::Tokenizer::Tokenizer(const char *FilePath)
 }
 
 bf::Tokenizer::~Tokenizer()
-{}
+{
+    if (m_Stream.is_open())
+        m_Stream.close();
+}
 
 
 /*
@@ -43,22 +46,26 @@ const bool bf::Tokenizer::fileOpen()
 *
 * ==============================================================
 */
-std::vector<char> bf::Tokenizer::loadInstructions()
+std::vector<unsigned char> bf::Tokenizer::loadInstructions()
 {
     // Check whether the file is open
     if (!m_Stream.is_open()) {
         return {'0'};
     }
 
-    m_InstructionVector.reserve(DEFUALT_VECTOR_SIZE); // Reserve space
-    char currentData;
+    // Reserve space
+    m_InstructionVector.reserve(DEFUALT_VECTOR_SIZE);
 
+
+    // Read data
+    char currentData;
     while (m_Stream.get(currentData)) {
         if (m_InstructionSet.count(currentData))
             m_InstructionVector.emplace_back(currentData); // Place data
     }
 
     m_Stream.close(); // Close file
+
     return m_InstructionVector;
 }
 

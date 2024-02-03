@@ -17,18 +17,19 @@ namespace bf {
             Tokenizer(const char* FilePath);
             ~Tokenizer();
 
-            const bool         fileOpen();
-            std::vector<char>  loadInstructions();
+            const bool                  fileOpen();
+            std::vector<unsigned char>  loadInstructions();
 
         private:
             // Variables
-            std::ifstream             m_Stream;
-            std::vector<char>         m_InstructionVector;
-            std::unordered_set<char>  m_InstructionSet;
+            std::ifstream                      m_Stream;
+            std::vector<unsigned char>         m_InstructionVector;
+            std::unordered_set<unsigned char>  m_InstructionSet;
 
         private:
             // Functions
             void  m_initInstructionSet();
     };
+    
 }
 #endif // !BF_TOKENIZER_H

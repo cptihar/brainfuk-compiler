@@ -2,15 +2,16 @@
 #include <vector>
 
 #include "Tokenizer.h"
-
+#include "Parser.h"
 
 #define LOG(message) std::cout << "[LOG] " << message << std::endl;
 
 
 int main (int argc, char** argv) {
 
-    std::vector<char> Instructions;
+    std::vector<unsigned char> Instructions;
 
+    // Tokenizer scope
     {
         bf::Tokenizer tokenizer(argv[1]);
 
@@ -29,6 +30,16 @@ int main (int argc, char** argv) {
         // Load the instructions
         Instructions = tokenizer.loadInstructions();
     }
-
+    
+    // Parser scope
+    {
+        bf::Parser parser = bf::Parser(Instructions);
+        parser.parseInstructions();
+        if (parser.hasBracketError()) {
+            LOG("Parser: Bracket mismatch");
+            return EXIT_FAILURE;
+        }
+    }
+    
     return EXIT_SUCCESS;
 }

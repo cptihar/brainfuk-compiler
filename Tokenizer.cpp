@@ -3,6 +3,7 @@
 bf::Tokenizer::Tokenizer(const char *FilePath)
     :m_Stream(FilePath, std::ios::in)
 {
+    m_initInstructionSet();
 }
 
 bf::Tokenizer::~Tokenizer()
@@ -74,12 +75,12 @@ std::vector<char> bf::Tokenizer::loadInstructions()
 */
 void bf::Tokenizer::m_initInstructionSet()
 {
-    m_InstructionSet.insert(BF_DATA_DECREMENT);
-    m_InstructionSet.insert(BF_DATA_INCREMENT);
-    m_InstructionSet.insert(BF_DATA_INPUT);
-    m_InstructionSet.insert(BF_DATA_PRINT);
     m_InstructionSet.insert(BF_PTR_MOVE_LEFT);
     m_InstructionSet.insert(BF_PTR_MOVE_RIGHT);
-    m_InstructionSet.insert(BF_LOOP_END);
+    m_InstructionSet.insert(BF_DATA_INCREMENT);
+    m_InstructionSet.insert(BF_DATA_DECREMENT);
+    m_InstructionSet.insert(BF_DATA_PRINT);
+    m_InstructionSet.insert(BF_DATA_INPUT);
     m_InstructionSet.insert(BF_LOOP_START);
+    m_InstructionSet.insert(BF_LOOP_END);
 }

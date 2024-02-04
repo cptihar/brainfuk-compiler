@@ -60,8 +60,10 @@ std::vector<unsigned char> bf::Tokenizer::loadInstructions()
     // Read data
     char currentData;
     while (m_Stream.get(currentData)) {
+        // Loop up current data
         if (m_InstructionSet.count(currentData))
             m_InstructionVector.emplace_back(currentData); // Place data
+
     }
 
     m_Stream.close(); // Close file

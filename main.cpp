@@ -54,7 +54,7 @@ int main (int argc, char** argv) {
     }
 
     // Create assembly
-//    AssemblyGenerator.createAssembly();
+    AssemblyGenerator.createAssembly();
 
     // Dump assembly
     AssemblyGenerator.dumpAssembly(argv[2]);

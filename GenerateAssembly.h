@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include "BrainfuckConstants.h"
-#include "InstructionMapper.h"
+#include "AssemblyInstructions.h"
 
 namespace bf {
 
@@ -24,7 +24,7 @@ namespace bf {
             // Variables
             const std::vector<unsigned char>&  m_InstructionVectorRef;
             std::vector<std::string>           m_GeneratedAssembly;
-            bf::InstructionMapper              m_InstructionMapper;
+            bf::AssemblyInstructions           m_AsmInstructions;
 
             // Brutal hashmap
             std::unordered_map<unsigned char, std::function<std::string()>> m_HashedFunctions;

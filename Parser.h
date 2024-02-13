@@ -10,8 +10,10 @@
 #define P_BRACKET_ERROR_MSG   "\nBracket mismatch\n"
 #define P_NEGINDEX_ERROR_MSG  "\nNegative pointer index\n"
 
-namespace bf {
-    class Parser {
+namespace bf 
+{
+    class Parser 
+    {
         public:
             Parser(std::vector<unsigned char>& instructions);
             ~Parser();

@@ -9,9 +9,11 @@
 
 #define DEFUALT_VECTOR_SIZE  2000
 
-namespace bf {
+namespace bf 
+{
 
-    class Tokenizer {
+    class Tokenizer 
+    {
         public:
             Tokenizer() = default;
             Tokenizer(const char* FilePath);
@@ -30,6 +32,5 @@ namespace bf {
             // Functions
             void  m_initInstructionSet();
     };
-    
 }
 #endif // !BF_TOKENIZER_H

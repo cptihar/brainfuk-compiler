@@ -1,7 +1,7 @@
 #include "AssemblyInstructions.h"
 
-bf::AssemblyInstructions::~AssemblyInstructions()
-{}
+
+bf::AssemblyInstructions::~AssemblyInstructions() {}
 
 
 /*
@@ -12,30 +12,21 @@ bf::AssemblyInstructions::~AssemblyInstructions()
 * It sets the instruction pointer to the beginning
 * Initializes _start
 * 
-* Return: std::string
+* Return: std::vector<std::string> (SVEC)
 *
 * ===================================================
 */
-std::string bf::AssemblyInstructions::beginAssembly(uint32_t tapeSize)
+SVEC bf::AssemblyInstructions::beginAssembly(uint32_t tapeSize)
 {
-    std::string ret;
-    ret += "section .data\n";
-    ret += "   tape_size equ " + std::to_string(tapeSize) + "\n";
-    ret += "   pointer dq 0\n";
-    ret += "\nsection .bss\n";
-    ret += "   tape resb tape_size\n";
-
-    ret += "\nsection .text\n";
-    ret += "   global _start\n";
-
-    ret += "\n_start:\n";
-    ret += "   cld\n";
-    ret += "   mov edi, tape\n";
-    ret += "   mov [pointer], edi\n";
-    ret += "   ; End of assembly setup\n";
-    ret += "   ; Start of brainfuck code\n\n";
-
-    return ret;
+        SVEC instructions;
+        instructions.push_back(".intel_syntax noprefix");
+        instructions.push_back(".section .data");
+        instructions.push_back("    tape: .zero " + std::to_string(tapeSize));
+        instructions.push_back(".section .text");
+        instructions.push_back(".global _start");
+        instructions.push_back("_start:");
+        instructions.push_back("    mov ebx, OFFSET tape");
+        return instructions;
 }
 
 
@@ -44,21 +35,17 @@ std::string bf::AssemblyInstructions::beginAssembly(uint32_t tapeSize)
 *
 * Function responsible for generating the program's exit code
 *
-* Return: std::string
+* Return: std::vector<std::string> (SVEC)
 *
 * ===========================================================
 */
-std::string bf::AssemblyInstructions::endAssembly()
+SVEC bf::AssemblyInstructions::endAssembly()
 {
-    std::string ret;
-
-    ret += "\n\n   ; End of brainfuck code\n";
-    ret += "   ; Close program\n\n";
-    ret += "   mov eax, 1\n";
-    ret += "   xor ebx, ebx\n";
-    ret += "   int 0x80";
-
-    return ret;
+    SVEC instructions;
+    instructions.push_back("    mov eax, 1"); 
+    instructions.push_back("    xor ebx, ebx");
+    instructions.push_back("    int 0x80");
+    return instructions;
 }
 
 
@@ -68,13 +55,13 @@ std::string bf::AssemblyInstructions::endAssembly()
 * Function responsible for decrementing the instruction pointer
 * Generates the code for it
 *
-* Return: std::string
+* Return: std::vector<std::string>
 *
 * =============================================================
 */
-std::string bf::AssemblyInstructions::ptrMoveLeft()
+SVEC bf::AssemblyInstructions::ptrMoveLeft()
 {
-    return "   dec edi";
+    return {"    sub ebx, 1"};
 }
 
 
@@ -84,13 +71,13 @@ std::string bf::AssemblyInstructions::ptrMoveLeft()
 * Function responsible for incrementing the instruction pointer
 * Generates the code for it
 *
-* Return: std::string
+* Return: std::vector<std::string>
 *
 * =============================================================
 */
-std::string bf::AssemblyInstructions::ptrMoveRight()
+SVEC bf::AssemblyInstructions::ptrMoveRight()
 {
-    return "   inc edi";
+    return {"    add ebx, 1"};
 }
 
 
@@ -100,13 +87,13 @@ std::string bf::AssemblyInstructions::ptrMoveRight()
 * Function responsible for incrementing the data at the instruction pointer
 * Generates the code for it
 *
-* Return: std::string
+* Return: std::vector<std::string> (SVEC)
 *
 * =============================================================
 */
-std::string bf::AssemblyInstructions::dataIncrement()
+SVEC bf::AssemblyInstructions::dataIncrement()
 {
-    return "   inc byte [edi]";
+    return {"    add byte ptr [ebx], 1"};
 }
 
 
@@ -116,13 +103,13 @@ std::string bf::AssemblyInstructions::dataIncrement()
 * Function responsible for decrementing the data at the instruction pointer
 * Generates the code for it
 *
-* Return: std::string
+* Return: std::vector<std::string> (SVEC)
 *
 * =============================================================
 */
-std::string bf::AssemblyInstructions::dataDecrement()
+SVEC bf::AssemblyInstructions::dataDecrement()
 {
-    return "   dec byte [edi]";
+    return {"    sub byte ptr [ebx], 1"};
 }
 
 
@@ -132,29 +119,18 @@ std::string bf::AssemblyInstructions::dataDecrement()
 * Function responsible for input handling
 * Generates the assembly code for it
 *
-* Return: std::string
+* Return: std::vector<std::string> (SVEC)
 *
 * =======================================
 */
-std::string bf::AssemblyInstructions::ioInput()
-{
-    // Mi a fasz
-    std::string ret;
-    ret += "   mov eax, 3\n";
-    ret += "   mov ebx, 0\n";
-    ret += "   mov ecx, [pointer]\n";
-    ret += "   mov edx, 1\n";
-    ret += "   int 0x80\n";
-
-    return ret;
+SVEC bf::AssemblyInstructions::ioInput() {
+    SVEC instructions;
+    instructions.push_back("    mov eax, 3");
+    instructions.push_back("    mov ecx, ebx");
+    instructions.push_back("    mov edx, 1");
+    instructions.push_back("    int 0x80");
+    return instructions;
 }
-/*
-mov eax, 3                ; syscall number for sys_read
-mov ebx, 0                ; file descriptor for stdin
-mov ecx, [pointer]        ; address of the current cell
-mov edx, 1                ; number of bytes to read
-int 0x80                  ; invoke system call to read character from stdin
-*/
 
 
 /*
@@ -163,40 +139,52 @@ int 0x80                  ; invoke system call to read character from stdin
 * Function responsible for handling the printing instruction
 * Generates the code for it
 *
-* Return: std::string
+* Return: std::vector<std::string> (SVEC)
 *
 * ==========================================================
 */
-std::string bf::AssemblyInstructions::ioPrint()
+SVEC bf::AssemblyInstructions::ioPrint()
 {
-    std::string ret;
-    ret += "   mov eax, 4\n";
-    ret += "   mov ebx, 1\n";
-    ret += "   mov ecx, [pointer]\n";
-    ret += "   mov edx, 1\n";
-    ret += "   int 0x80\n";
-
-    return ret;
+    SVEC instructions;
+    instructions.push_back("    mov eax, 4");
+    instructions.push_back("    mov ecx, ebx");
+    instructions.push_back("    mov edx, 1");
+    instructions.push_back("    int 0x80");
+    return instructions;
 }
+
 
 /*
-mov edx, 1                ; Length of the character to print
-mov ecx, esp              ; Pointer to the character to print
-mov eax, 4                ; syscall (write)
-mov ebx, 1                ; File descriptor for stdout
-int 0x80                  ; Invoke the operating system to write to stdout
+* ===============================================
+*
+* Generates the assembly code for '[' instruction
+* 
+* Return: std::vector<std::string> (SVEC)
+*
+* ===============================================
 */
-
-
-// TODO
-std::string bf::AssemblyInstructions::loopBegin()
+SVEC bf::AssemblyInstructions::loopBegin(const std::string& jumpForward)
 {
-    return "Loop Begn";
+    SVEC instructions;
+    instructions.push_back("    cmp byte ptr [ebx], 0");
+    instructions.push_back("    je " + jumpForward);
+    return instructions;
 }
 
 
-// TODO
-std::string bf::AssemblyInstructions::loopEnd()
+/*
+* ===============================================
+*
+* Generates the assembly code for ']' instruction
+* 
+* Return: std::vector<std::string> (SVEC)
+*
+* ===============================================
+*/
+SVEC bf::AssemblyInstructions::loopEnd(const std::string& jumpBackPosition)
 {
-    return "Loop End";
+    SVEC instructions;
+    instructions.push_back("    cmp byte ptr [ebx], 0");
+    instructions.push_back("    jne " + jumpBackPosition);
+    return instructions;
 }

@@ -2,35 +2,36 @@
 #define ASSEMBLY_INSTRUCTIONS_H
 
 #include <string>
-#include <sstream>
+#include <vector>
+
+#define SVEC  std::vector<std::string>
 
 namespace bf {
 
     class AssemblyInstructions {
-
         public:
             AssemblyInstructions() = default;
             ~AssemblyInstructions();
             
             // Assembly start, end
-            std::string beginAssembly(uint32_t tapeSize);
-            std::string endAssembly();
+            SVEC beginAssembly(uint32_t tapeSize);
+            SVEC endAssembly();
 
             // Instruction pointer manipulators
-            std::string ptrMoveLeft();
-            std::string ptrMoveRight();
+            SVEC ptrMoveLeft();
+            SVEC ptrMoveRight();
             
             // Data manipulators
-            std::string dataIncrement();
-            std::string dataDecrement();
+            SVEC dataIncrement();
+            SVEC dataDecrement();
 
             // Input, output
-            std::string ioInput();
-            std::string ioPrint();
+            SVEC ioInput();
+            SVEC ioPrint();
 
             // Loops
-            std::string loopBegin();
-            std::string loopEnd();
+            SVEC loopBegin(const std::string& jumpForward);
+            SVEC loopEnd(const std::string& jumpBackPosition);
     };
 }
 #endif // !ASSEMBLY_INSTRUCTIONS_H

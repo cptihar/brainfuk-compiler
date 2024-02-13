@@ -123,7 +123,8 @@ SVEC bf::AssemblyInstructions::dataDecrement()
 *
 * =======================================
 */
-SVEC bf::AssemblyInstructions::ioInput() {
+SVEC bf::AssemblyInstructions::ioInput()
+{
     SVEC instructions;
     instructions.push_back("    mov eax, 3");
     instructions.push_back("    mov ecx, ebx");
